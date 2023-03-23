@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --silent --watchAll",
     "eject": "react-scripts eject",
     "format": "prettier --write **/*.{ts,tsx}",
     "lint-staged": "eslint --fix ./src/* && prettier --write **/*.{ts,tsx}",
