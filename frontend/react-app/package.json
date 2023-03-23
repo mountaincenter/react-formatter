@@ -19,11 +19,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --silent --watchAll",
+    "test": "react-scripts test --ci",
     "eject": "react-scripts eject",
     "format": "prettier --write **/*.{ts,tsx}",
-    "lint-staged": "eslint --fix ./src/* && prettier --write **/*.{ts,tsx}",
-    "jest": "jest"
+    "lint-staged": "eslint --fix ./src/* && prettier --write **/*.{ts,tsx}"
   },
   "eslintConfig": {
     "extends": [

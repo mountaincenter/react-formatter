@@ -3,4 +3,3 @@
 
 cd ./frontend/react-app
 yarn lint-staged
-yarn test
