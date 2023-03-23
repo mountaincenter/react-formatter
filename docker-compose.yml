@@ -1,0 +1,17 @@
+version: "3"
+services:
+  web:
+    # env_file: ./frontend/react-app/.env
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/usr/src/app
+    # environment:
+    #   - ./frontend/.env
+    command: sh -c "yarn start"
+    # command: sh -c "yarn serve -s build"
+    ports:
+      - "3000:3000"
+    # depends_on:
+    #   - api
