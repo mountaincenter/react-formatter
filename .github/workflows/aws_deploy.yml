@@ -2,8 +2,8 @@ name: build-and-deploy
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
 
 env:
   OIDC_ARN: ${{ secrets.AWS_OIDC_ARN }}
