@@ -43,16 +43,19 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version-file: .nvmrc
+          node-version-file: ./frontend/react-app/.nvmrc
           cache: npm
 
       - name: Install package
+        working-directory: ./frontend/react-app
         run: npm ci
 
       - name: Build
+        working-directory: ./frontend/react-app
         run: npm run build
 
       - name: Deploy
+        working-directory: ./frontend/react-app
         run: |
           aws s3 sync --region ap-northeast-1 ./out s3://${{ env.BUCKET_NAME }} --delete --size-only
           aws cloudfront create-invalidation --region ap-northeast-1 --distribution-id ${{ env.DISTRIBUTION_ID }} --paths "/*"
