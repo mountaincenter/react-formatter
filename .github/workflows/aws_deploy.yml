@@ -1,0 +1,58 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  OIDC_ARN: ${{ secrets.AWS_OIDC_ARN }}
+  BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+  DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Setup aws
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ env.OIDC_ARN }}
+          aws-region: 'ap-northeast-1'
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install package
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        run: |
+          aws s3 sync --region ap-northeast-1 ./out s3://${{ env.BUCKET_NAME }} --delete --size-only
+          aws cloudfront create-invalidation --region ap-northeast-1 --distribution-id ${{ env.DISTRIBUTION_ID }} --paths "/*"
